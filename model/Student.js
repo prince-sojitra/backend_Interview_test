@@ -25,6 +25,10 @@ const StudentSchema = new Schema({
     type : String,
     require : true
   },
+  education : {
+    type : String,
+    required : true
+  },
   branch : {
     type : String,
     require : true
