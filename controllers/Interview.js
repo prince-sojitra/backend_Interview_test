@@ -1,6 +1,7 @@
 var INTERVIEW = require('../model/Interview')
 exports.Create = async function (req, res, next) {
     try {
+        req.body.userID = req.user
         let InterviewCreate = await INTERVIEW.create(req.body)
         res.status(201).json({
             status: "success",

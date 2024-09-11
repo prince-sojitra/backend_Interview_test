@@ -1,6 +1,7 @@
 var COMPANY = require('../model/Company')
 exports.Create = async function (req, res, next) {
     try {
+        
         let CompanyCreate = await COMPANY.create(req.body)
         res.status(201).json({
             status: "success",

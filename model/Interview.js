@@ -11,8 +11,11 @@ const InterviewSchema = new Schema({
     default: 'Pending',
     required: true,
   },
-  description: { type: String }
-
+  description: { type: String },
+  userID : {
+    type : mongoose.Schema.Types.ObjectId,
+    ref : 'admin'
+  }
 });
 
 const INTERVIEW = mongoose.model("interview", InterviewSchema)

@@ -7,6 +7,7 @@ exports.Sequre = async function (req, res, next) {
       throw new Error("Please Send Token");
     }
     var decoded = jwt.verify(token, process.env.ADMIN_SECURE);
+    req.user = decoded.AdminId
     let checkAdmin = await ADMIN.findById(decoded.AdminId);
     if (!checkAdmin) {
       throw new Error("Admin not Found");
