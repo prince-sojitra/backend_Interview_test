@@ -34,7 +34,7 @@ exports.AllCompany = async function (req, res, next) {
 exports.CompanyCount = async function (req, res, next) {
     try {
         
-        let data = await COMPANY.find().count()
+        let data = await COMPANY.find().countDocuments()
         res.status(200).json({
             status: "success",
             message: "Company Count Successfull",

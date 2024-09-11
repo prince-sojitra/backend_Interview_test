@@ -36,7 +36,7 @@ exports.AllStudent = async function (req, res, next) {
 exports.StudentCount = async function (req, res, next) {
     try {
         
-        let data = await STUDENT.find().count()
+        let data = await STUDENT.find().countDocuments()
         res.status(200).json({
             status: "success",
             message: "Student Count Successfull",
@@ -53,7 +53,7 @@ exports.StudentCount = async function (req, res, next) {
 exports.StudentPendingCount = async function (req, res, next) {
     try {
         
-        let data = await STUDENT.find({jobstatus : "Pending"}).count()
+        let data = await STUDENT.find({jobstatus : "Pending"}).countDocuments()
         res.status(200).json({
             status: "success",
             message: "Pending Count Successfull",
@@ -70,7 +70,7 @@ exports.StudentPendingCount = async function (req, res, next) {
 exports.StudentDoneCount = async function (req, res, next) {
     try {
         
-        let data = await STUDENT.find({jobstatus : "Done"}).count()
+        let data = await STUDENT.find({jobstatus : "Done"}).countDocuments()
         res.status(200).json({
             status: "success",
             message: "Pending Count Successfull",

@@ -78,7 +78,7 @@ exports.FollowUpdateCount = async function (req, res, next) {
             status : {
                 $eq : "Pending"
             }
-        }).count()
+        }).countDocuments()
 
         res.status(200).json({
             status: "success",
@@ -147,7 +147,7 @@ exports.DueInterviewCount = async function (req, res, next) {
                 status : {
                     $eq : "Pending"
                 }
-            }).count()
+            }).countDocuments()
 
         console.log(data);
 

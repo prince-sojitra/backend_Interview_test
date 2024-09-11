@@ -72,7 +72,7 @@ exports.FollowUpdateCount = async function (req, res, next) {
         $gte: today,
         $lt: tomorrow,
       },
-    }).count();
+    }).countDocuments();
 
     res.status(200).json({
       status: "success",
@@ -120,7 +120,7 @@ exports.DueExamCount = async function (req, res, next) {
       examdate: {
         $lt: today,
       },
-    }).count();
+    }).countDocuments();
 
     res.status(200).json({
       status: "success",
