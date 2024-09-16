@@ -8,6 +8,7 @@ router.get('/', AdminSequre.Sequre, InterviewController.AllInterview);
 router.get('/followupdate', AdminSequre.Sequre, InterviewController.FollowUpdate);
 router.get('/followcount', AdminSequre.Sequre, InterviewController.FollowUpdateCount);
 router.get('/due', AdminSequre.Sequre, InterviewController.DueInterview);
+router.get('/faculty_jobcount', AdminSequre.Sequre, InterviewController.countFacultywiseJobDonewithinMonth);
 router.get('/duecount', AdminSequre.Sequre, InterviewController.DueInterviewCount);
 router.delete('/:id', AdminSequre.Sequre, InterviewController.Delete);
 router.put('/:id', AdminSequre.Sequre, InterviewController.Update);

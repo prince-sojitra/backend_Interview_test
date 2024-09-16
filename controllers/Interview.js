@@ -63,6 +63,25 @@ exports.FollowUpdate = async function (req, res, next) {
     }
 }
 
+exports.countFacultywiseJobDonewithinMonth = async function (req, res, next) {
+    try {
+        
+
+        let data = await INTERVIEW.find()
+
+        res.status(200).json({
+            status: "success",
+            message: "Today Follow update Interview Successful",
+            data
+        });
+    } catch (error) {
+        res.status(404).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+}
+
 exports.FollowUpdateCount = async function (req, res, next) {
     try {
         const today = new Date();
