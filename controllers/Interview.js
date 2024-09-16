@@ -1,4 +1,5 @@
 var INTERVIEW = require('../model/Interview')
+var ADMIN = require('../model/Admin')
 exports.Create = async function (req, res, next) {
     try {
         req.body.userID = req.user
@@ -18,7 +19,7 @@ exports.Create = async function (req, res, next) {
 
 exports.AllInterview = async function (req, res, next) {
     try {
-        let data = await INTERVIEW.find().populate(["studentname", "companyname","userID"])
+        let data = await INTERVIEW.find().populate(["studentname", "companyname", "userID"])
         res.status(200).json({
             status: "success",
             message: "Interview All Data Successfull",
@@ -45,8 +46,8 @@ exports.FollowUpdate = async function (req, res, next) {
                 $gte: today,
                 $lt: tomorrow
             },
-            status : {
-                $eq : "Pending"
+            status: {
+                $eq: "Pending"
             }
         }).populate(["studentname", "companyname"]);
 
@@ -65,28 +66,83 @@ exports.FollowUpdate = async function (req, res, next) {
 
 exports.countFacultywiseJobDonewithinMonth = async function (req, res, next) {
     try {
-        // Get the current date
-        let now = new Date();
-        // Calculate the first day of the current month
-        let firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        // Calculate the last day of the current month
-        let lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 59, 999);
 
-        // Find interviews with 'Done' status within the current month
-        let data = await INTERVIEW.find({
-            status: {$eq: 'Done'},
-            updatedAt: { // Assuming 'updatedAt' is the date field you're filtering by
-                $gte: firstDayOfMonth,
-                $lte: lastDayOfMonth
-            }
-        })
-        .populate("userID")
-        .select('studentname');
+  const result = await ADMIN.aggregate([
+    // Look up interviews for each admin
+    {
+      $lookup: {
+        from: 'interviews', // Ensure this matches your interview collection name
+        localField: '_id',
+        foreignField: 'userID',
+        as: 'interviews'
+      }
+    },
+    // Unwind the interviews array to process each interview
+    {
+      $unwind: {
+        path: '$interviews',
+        preserveNullAndEmptyArrays: true // Keep admins even if they have no interviews
+      }
+    },
+    // Match interviews that fall within the current month
+    {
+      $match: {
+        $or: [
+          { 'interviews.followupdate': { $gte: startOfMonth, $lte: endOfMonth } },
+          { 'interviews': { $eq: null } } // Keep admins with no interviews
+        ]
+      }
+    },
+    // Group by admin and status, counting how many interviews each admin has for each status
+    {
+      $group: {
+        _id: {
+          userID: '$_id',
+          username: '$username',
+          status: '$interviews.status'
+        },
+        count: { $sum: 1 }
+      }
+    },
+    // Group by admin to accumulate interview counts by status
+    {
+      $group: {
+        _id: { userID: '$_id.userID', username: '$_id.username' },
+        pending: {
+          $sum: {
+            $cond: [{ $eq: ['$_id.status', 'Pending'] }, '$count', 0]
+          }
+        },
+        reject: {
+          $sum: {
+            $cond: [{ $eq: ['$_id.status', 'Reject'] }, '$count', 0]
+          }
+        },
+        done: {
+          $sum: {
+            $cond: [{ $eq: ['$_id.status', 'Done'] }, '$count', 0]
+          }
+        }
+      }
+    },
+    // Add 0 for counts where an admin has no interviews
+    {
+      $project: {
+        _id: 0,
+        userID: '$_id.username',
+        pending: { $ifNull: ['$pending', 0] },
+        reject: { $ifNull: ['$reject', 0] },
+        done: { $ifNull: ['$done', 0] }
+      }
+    }
+  ]);
 
         res.status(200).json({
             status: "success",
             message: "Faculty-wise jobs done within the current month",
-            data
+            data: result
         });
     } catch (error) {
         res.status(404).json({
@@ -110,8 +166,8 @@ exports.FollowUpdateCount = async function (req, res, next) {
                 $gte: today,
                 $lt: tomorrow
             },
-            status : {
-                $eq : "Pending"
+            status: {
+                $eq: "Pending"
             }
         }).countDocuments()
 
@@ -140,8 +196,8 @@ exports.DueInterview = async function (req, res, next) {
             followupdate: {
                 $lt: today
             },
-            status : {
-                $eq : "Pending"
+            status: {
+                $eq: "Pending"
             }
         }).populate(["studentname", "companyname"]);
 
@@ -179,8 +235,8 @@ exports.DueInterviewCount = async function (req, res, next) {
                 followupdate: {
                     $lt: today
                 },
-                status : {
-                    $eq : "Pending"
+                status: {
+                    $eq: "Pending"
                 }
             }).countDocuments()
 
