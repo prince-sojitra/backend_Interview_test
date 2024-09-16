@@ -65,13 +65,27 @@ exports.FollowUpdate = async function (req, res, next) {
 
 exports.countFacultywiseJobDonewithinMonth = async function (req, res, next) {
     try {
-        
+        // Get the current date
+        let now = new Date();
+        // Calculate the first day of the current month
+        let firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        // Calculate the last day of the current month
+        let lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-        let data = await INTERVIEW.find({status : {$eq : 'Done'}}).populate("userID")
+        // Find interviews with 'Done' status within the current month
+        let data = await INTERVIEW.find({
+            status: {$eq: 'Done'},
+            updatedAt: { // Assuming 'updatedAt' is the date field you're filtering by
+                $gte: firstDayOfMonth,
+                $lte: lastDayOfMonth
+            }
+        })
+        .populate("userID")
+        .select('studentname');
 
         res.status(200).json({
             status: "success",
-            message: "Today Follow update Interview Successful",
+            message: "Faculty-wise jobs done within the current month",
             data
         });
     } catch (error) {
@@ -81,6 +95,7 @@ exports.countFacultywiseJobDonewithinMonth = async function (req, res, next) {
         });
     }
 }
+
 
 exports.FollowUpdateCount = async function (req, res, next) {
     try {
