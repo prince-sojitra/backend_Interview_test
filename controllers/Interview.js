@@ -67,7 +67,7 @@ exports.countFacultywiseJobDonewithinMonth = async function (req, res, next) {
     try {
         
 
-        let data = await INTERVIEW.find({status : 'Done'}).populate("userID")
+        let data = await INTERVIEW.find({status : {$eq : 'Done'}}).populate("userID")
 
         res.status(200).json({
             status: "success",
