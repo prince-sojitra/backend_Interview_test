@@ -18,7 +18,7 @@ exports.Create = async function (req, res, next) {
 
 exports.AllInterview = async function (req, res, next) {
     try {
-        let data = await INTERVIEW.find().populate(["studentname", "companyname"])
+        let data = await INTERVIEW.find().populate(["studentname", "companyname","userID"])
         res.status(200).json({
             status: "success",
             message: "Interview All Data Successfull",
