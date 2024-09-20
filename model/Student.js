@@ -36,6 +36,9 @@ const StudentSchema = new Schema({
   note : {
     type : String,
     require : true
+  },
+  resume : {
+    type : String
   }
 });
 

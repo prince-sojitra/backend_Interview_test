@@ -1,6 +1,7 @@
 var STUDENT = require('../model/Student')
 exports.Create = async function (req, res, next) {
     try {
+        req.body.resume = req.file.filename
         let StudentCreate = await STUDENT.create(req.body)
         res.status(201).json({
             status: "success",
