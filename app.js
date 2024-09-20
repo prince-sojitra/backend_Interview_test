@@ -31,6 +31,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 
+app.use(cors());
 app.use((req, res, next) => {
   res.setHeader('Content-Security-Policy', "default-src 'self' https: http:");
   next();
@@ -40,7 +41,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
 app.use("/", indexRouter);
 app.use("/admin", adminRouter);
 app.use("/student", StudentRouter);
